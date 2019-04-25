@@ -10,7 +10,7 @@ def generate_ssbm_graphs(
         num_graphs: int,
         avg_degree_inside: float,
         avg_degree_between: float,
-        seed: int = 0) -> list:
+        seed: int = 0):
 
     """ Generates graphs using Symmetric Stochastic Block Model (SSBM) with specified parameters
     num_nodes - number of nodes
@@ -23,7 +23,6 @@ def generate_ssbm_graphs(
     community_size = num_nodes // num_communities
     probability_inside_community = avg_degree_inside / num_nodes
     probability_between_communities = avg_degree_between / num_nodes
-    graphs = []
     for i in range(num_graphs):
         graph = nx.random_partition_graph(
             [community_size for _ in range(num_communities)],
@@ -31,9 +30,7 @@ def generate_ssbm_graphs(
             probability_between_communities,
             seed=seed + i)
 
-        graphs.append(graph)
-
-    return graphs
+        yield graph
 
 
 def get_node_community_labels(graph: nx.Graph) -> list:
