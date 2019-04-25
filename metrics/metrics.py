@@ -1,5 +1,5 @@
 import numpy as np
-from networkx.algorithms.community.quality import modularity
+from networkx.algorithms.community import modularity
 from sklearn.metrics import normalized_mutual_info_score
 from sympy.utilities.iterables import multiset_permutations
 

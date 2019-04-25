@@ -43,9 +43,9 @@ def main():
             output_folder = output_train_folder if i < train_size else output_test_folder
             graph_index = i if i < train_size else i - train_size
             adjacency = nx.adjacency_matrix(graph)
-            np.save(output_folder + f"adj-{graph_index}.npy", adjacency, allow_pickle=False)
+            np.save(output_folder + f"adj-{graph_index}", adjacency)
             labels = dataset_utils.get_node_community_labels(graph)
-            np.save(output_folder + f"labels-{graph_index}.npy", labels, allow_pickle=False)
+            np.save(output_folder + f"labels-{graph_index}", labels)
 
 
 if __name__ == '__main__':

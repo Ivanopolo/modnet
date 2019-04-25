@@ -1,10 +1,10 @@
-sonnet
+dm-sonnet==1.23
 sympy
 scikit-learn
 scipy
 tensorflow
 numpy
-networkx
+networkx==2.3
 graph_nets
 docopt
 pandas
