@@ -78,10 +78,10 @@ def main():
 
         labels_path = os.path.join(graphs_path, f"labels-{idx}.npy")
         adj_path = os.path.join(graphs_path, f"adj-{idx}.npy")
-        labels = np.load(labels_path)
+        labels = np.load(labels_path, allow_pickle=False)
         true_labels = label_encoder.fit_transform(labels.reshape(-1, 1))
         all_models[0].true_labels = true_labels
-        adjacency = np.load(adj_path).tolist()
+        adjacency = np.load(adj_path, allow_pickle=False).tolist()
         graph_nx = dataset_utils.graph_from_adjacency(adjacency, labels)
 
         for j, m in enumerate(all_models):
