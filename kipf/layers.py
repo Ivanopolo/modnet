@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from kipf.inits import glorot, zeros, ones
+from kipf.inits import glorot, zeros
 
 # global unique layer ID dictionary for layer name assignment
 _LAYER_UIDS = {}

@@ -1,0 +1,8 @@
+sonnet
+sympy
+scikit-learn
+scipy
+tensorflow
+numpy
+networkx
+graph_nets
