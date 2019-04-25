@@ -6,7 +6,7 @@ from kipf.metrics import masked_softmax_cross_entropy, masked_accuracy
 
 class Model(object):
     def __init__(self, **kwargs):
-        allowed_kwargs = {'name', 'logging'}
+        allowed_kwargs = {'name', 'logging', 'support'}
         for kwarg in kwargs.keys():
             assert kwarg in allowed_kwargs, 'Invalid keyword argument: ' + kwarg
         name = kwargs.get('name')
@@ -51,8 +51,8 @@ class Model(object):
         self.vars = {var.name: var for var in variables}
 
         # Build metrics
-        self._loss()
-        self.opt_op = self.optimizer.minimize(self.loss)
+        # self._loss()
+        # self.opt_op = self.optimizer.minimize(self.loss)
 
     def predict(self):
         pass
@@ -181,35 +181,35 @@ class GCN(Model):
 
 class AdaptedGCN(Model):
     def __init__(self,
-                 placeholders,
                  input_dim,
                  num_communities,
-                 dropout=True,
+                 features,
+                 dropout=0.0,
                  hidden1=16,
                  **kwargs):
         super(AdaptedGCN, self).__init__(**kwargs)
 
-        self.inputs = placeholders.get('features', None)
+        self.inputs = features
         self.input_dim = input_dim
         self.num_communities = num_communities
-        self.placeholders = placeholders
         self.dropout = dropout
         self.hidden1 = hidden1
+        self.support = kwargs["support"]
         self.build()
 
     def _build(self):
         self.layers.append(GraphConvolution(input_dim=self.input_dim,
                                             output_dim=self.hidden1,
-                                            placeholders=self.placeholders,
                                             act=tf.nn.relu,
                                             featureless=self.inputs is None,
+                                            support=self.support,
                                             logging=self.logging))
 
         self.layers.append(GraphConvolution(input_dim=self.hidden1,
                                             output_dim=self.num_communities,
-                                            placeholders=self.placeholders,
                                             act=lambda x: x,
                                             dropout=self.dropout,
+                                            support=self.support,
                                             logging=self.logging))
 
     def predict(self):

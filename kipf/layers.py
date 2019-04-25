@@ -50,7 +50,7 @@ class Layer(object):
     """
 
     def __init__(self, **kwargs):
-        allowed_kwargs = {'name', 'logging'}
+        allowed_kwargs = {'name', 'logging', 'support'}
         for kwarg in kwargs.keys():
             assert kwarg in allowed_kwargs, 'Invalid keyword argument: ' + kwarg
         name = kwargs.get('name')
@@ -129,18 +129,14 @@ class Dense(Layer):
 
 class GraphConvolution(Layer):
     """Graph convolution layer."""
-    def __init__(self, input_dim, output_dim, placeholders, dropout=0.,
+    def __init__(self, input_dim, output_dim, dropout=0.,
                  sparse_inputs=False, act=tf.nn.relu, bias=False,
                  featureless=False, **kwargs):
         super(GraphConvolution, self).__init__(**kwargs)
 
-        if dropout:
-            self.dropout = placeholders['dropout']
-        else:
-            self.dropout = 0.
-
+        self.dropout = dropout
         self.act = act
-        self.support = placeholders['support']
+        self.support = kwargs['support']
         self.sparse_inputs = sparse_inputs
         self.featureless = featureless
         self.bias = bias

@@ -20,43 +20,13 @@ def softmax_predictions2labels(preds: np.array):
     return np.asarray(enc.fit_transform(pred_labels.reshape(-1, 1)).todense())
 
 
-def graph2gml(graph: nx.Graph, true_labels, output_path):
-    with open(output_path, "w") as f:
-        f.write("graph [\n")
-        for node_id in graph.nodes():
-            f.write("  node\n")
-            f.write("  [\n")
-            f.write(f"    id {node_id}\n")
-            f.write(f"    value {np.argmax(true_labels[node_id])}\n")
-            f.write("  ]\n")
-
-        for edge_tuple in graph.edges():
-            f.write("  edge\n")
-            f.write("  [\n")
-            f.write(f"    source {edge_tuple[0]}\n")
-            f.write(f"    target {edge_tuple[1]}\n")
-            f.write("  ]\n")
-
-        f.write("]\n")
-
-
-def graph_from_adjacency(adj, labels):
-    graph_nx = nx.convert_matrix.from_scipy_sparse_matrix(adj)
-
-    partition = []
-    for i in range(labels.max() + 1):
-        partition.append(set(np.argwhere(labels == i).flatten()))
-    graph_nx.graph['partition'] = partition
-    return graph_nx
-
-
 def sparse_matrix2sparse_tensor(sparse):
     coo = sparse.tocoo()
     indices = np.mat([coo.row, coo.col]).transpose()
     return tf.SparseTensor(indices, coo.data.astype(np.float32), coo.shape)
 
 
-def tf_modularity(adj, proba):
+def modularity_loss(proba, adj, associative):
     '''
     Modulariry = trace(U B U^T)/ ||W|| where B=W-mm^T/ ||W|| and ||W|| = sum of it's elements
     '''
@@ -67,7 +37,15 @@ def tf_modularity(adj, proba):
     proba_m = tf.matmul(m, proba)
     modularity -= tf.matmul(proba_m, proba_m, adjoint_b=True) / w
     modularity /= w
-    return modularity
+    return -modularity if associative else modularity
+
+
+def community_size_regularization(proba, num_nodes, num_communities):
+    community_ratio = 1.0 / num_communities
+    regularization_loss = tf.reduce_sum(
+        (tf.reduce_sum(proba, axis=0) / num_nodes - community_ratio) ** 2
+    )
+    return regularization_loss
 
 
 def build_unweighted_bethe_hessian(adjacency_matrix, associative=True):

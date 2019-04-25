@@ -41,10 +41,11 @@ def main():
 
         for i, graph in enumerate(graphs_generator):
             output_folder = output_train_folder if i < train_size else output_test_folder
+            graph_index = i if i < train_size else i - train_size
             adjacency = nx.adjacency_matrix(graph)
-            np.save(output_folder + f"adj-{i}.npy", adjacency)
+            np.save(output_folder + f"adj-{graph_index}.npy", adjacency)
             labels = dataset_utils.get_node_community_labels(graph)
-            np.save(output_folder + f"labels-{i}.npy", labels)
+            np.save(output_folder + f"labels-{graph_index}.npy", labels)
 
 
 if __name__ == '__main__':

@@ -37,34 +37,11 @@ def get_node_community_labels(graph: nx.Graph) -> list:
     return [node_attributes['block'] for _, node_attributes in graph.nodes(data=True)]
 
 
-if __name__ == '__main__':
-    n = 400
-    k = 5
-    N_train = 1
-    N_test = 1
-    rep = N_train + N_test
-    regime = 'disassociative'
+def graph_from_adjacency(adj, labels):
+    graph_nx = nx.convert_matrix.from_scipy_sparse_matrix(adj)
 
-    a, b = 0, 18 # disassociative case
-    # a, b = 21, 2 # associative case
-
-    graphs = generate_ssbm_graphs(n, k, rep, a, b)
-
-    # test dataset
-    for i, g in enumerate(graphs[:N_test]):
-        folder = f"graphs/{regime}_n{n}_k{k}/test/"
-        os.makedirs(folder, exist_ok=True)
-        A = nx.adjacency_matrix(g)
-        np.save(f"{folder}matrix-{i}.npy", A)
-        labels = get_node_community_labels(g)
-        print(labels)
-        np.save(f"{folder}labels-{i}.npy", labels)
-
-    # train dataset
-    for i, g in enumerate(graphs[N_test:]):
-        folder = f"graphs/{regime}_n{n}_k{k}/train/"
-        os.makedirs(folder, exist_ok=True)
-        A = nx.adjacency_matrix(g)
-        np.save(f"{folder}matrix-{i}.npy", A)
-        labels = get_node_community_labels(g)
-        np.save(f"{folder}labels-{i}.npy", labels)
+    partition = []
+    for i in range(labels.max() + 1):
+        partition.append(set(np.argwhere(labels == i).flatten()))
+    graph_nx.graph['partition'] = partition
+    return graph_nx
