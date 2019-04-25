@@ -1,5 +1,4 @@
-# Code for the paper ""
-The operation allows to use approximate nearest neighbors search to do faster top-k retrievals over a set of embeddings with the assumption that the underlying embeddings do not change very quickly.
+# Code for the paper "Unsupervised Community Detection with Modularity-based Attention Model"
 
 Installation
 ------------
@@ -11,9 +10,8 @@ $ cd modnet
 $ pip install -r requirements.txt
 ```
 
-How to reproduce paper results
+How to reproduce results
 ------------
-
 ```bash
 $ python generate_datasets.py
 $ python evaluate_models.py graphs/associative_n=400_k=5/test
