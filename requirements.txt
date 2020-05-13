@@ -2,10 +2,10 @@ dm-sonnet==1.23
 sympy
 scikit-learn
 scipy
-tensorflow
+tensorflow<2
 numpy
 networkx==2.3
-graph_nets
+graph_nets==1.0.4
 docopt
 pandas
 python-louvain
